@@ -7,9 +7,9 @@ from settings import *
 
 def on_message(channel, method_frame, header_frame, body):
     #print(method_frame.delivery_tag)
-    str=body.decode("utf-8").replace('H','M',1)
+    str=body.decode("utf-8").replace('e','i',1)
     #print(str)
-    os.system("python3 ./../RABBIT_MQ_E/producer.py -m \'"+str+'\'')
+    os.system("python3 ./../RABBIT_MQ_L/producer.py -m \'"+str+'\'')
     #print(LOG.info('Message has been received %s', body))
     #channel.basic_ack(delivery_tag=method_frame.delivery_tag)
 
@@ -37,8 +37,8 @@ if __name__ == '__main__':
     connection = pika.BlockingConnection(parameters)
     channel = connection.channel()
 
-    channel.queue_declare('INIT-H')
-    channel.basic_consume(on_message, 'INIT-H')
+    channel.queue_declare('H-to-E')
+    channel.basic_consume(on_message, 'H-to-E')
 
     try:
         channel.start_consuming()

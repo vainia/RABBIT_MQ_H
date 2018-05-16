@@ -4,12 +4,16 @@ from time import sleep
 import sys
 sys.path.append("..")
 from settings import *
+import time
 
 def on_message(channel, method_frame, header_frame, body):
     #print(method_frame.delivery_tag)
-    str=body.decode("utf-8").replace('H','M',1)
+    str=body.decode("utf-8").replace('!','?',1)
     #print(str)
-    os.system("python3 ./../RABBIT_MQ_E/producer.py -m \'"+str+'\'')
+    log=time.ctime()+' '+str+'\n'
+    with open('log.log', 'a') as the_file:
+        the_file.write(log)
+
     #print(LOG.info('Message has been received %s', body))
     #channel.basic_ack(delivery_tag=method_frame.delivery_tag)
 
@@ -37,8 +41,8 @@ if __name__ == '__main__':
     connection = pika.BlockingConnection(parameters)
     channel = connection.channel()
 
-    channel.queue_declare('INIT-H')
-    channel.basic_consume(on_message, 'INIT-H')
+    channel.queue_declare('L-to-W')
+    channel.basic_consume(on_message, 'L-to-W')
 
     try:
         channel.start_consuming()
