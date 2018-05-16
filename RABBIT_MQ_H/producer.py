@@ -2,17 +2,17 @@ import pika, logging, sys, argparse
 from argparse import RawTextHelpFormatter
 from time import sleep
 import sys
-sys.path.append("..")
+sys.path.append("./..")
 from settings import *
 
 if __name__ == '__main__':
-    examples = sys.argv[0] + " -p 15762 -s rabbitmq -m 'Hello' "
+    examples = sys.argv[0] + " -p 5672 -s rabbitmq -m 'Hello' "
     parser = argparse.ArgumentParser(formatter_class=RawTextHelpFormatter,
                                  description='Run producer.py',
                                  epilog=examples)
     parser.add_argument('-p', '--port', action='store', dest='port', help='The port to listen on.', required=False, default=SET['port'])
     parser.add_argument('-s', '--server', action='store', dest='server', help='The RabbitMQ server.', required=False, default=SET['server'])
-    parser.add_argument('-m', '--message', action='store', dest='message', help='The message to send', required=False, default='Hello!')
+    parser.add_argument('-m', '--message', action='store', dest='message', help='The message to send', required=False, default='Hello, World!')
     parser.add_argument('-r', '--repeat', action='store', dest='repeat', help='Number of times to repeat the message', required=False, default='1')
 
     args = parser.parse_args()
