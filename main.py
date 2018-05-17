@@ -15,10 +15,11 @@ def send_to_queve(data):
     qn = channel.queue_declare(SET['queue_above'])
     qn_name = q.method.queue
 
-    if channel.basic_publish(exchange='', routing_key=qn_name, body=json.dumps(data)):
-        LOG.info('Message has been delivered')
-    else:
-        LOG.warning('Message NOT delivered')
+    channel.basic_publish(exchange='', routing_key=qn_name, body=json.dumps(data))
+    # if channel.basic_publish(exchange='', routing_key=qn_name, body=json.dumps(data)):
+    #     LOG.info('Message has been delivered')
+    # else:
+    #     LOG.warning('Message NOT delivered')
 
 
 if __name__ == '__main__':
