@@ -37,7 +37,7 @@ if __name__ == '__main__':
     # Turn on delivery confirmations
     channel.confirm_delivery()
 
-    channel.basic_publish(exchange='', routing_key=q_name, body=json.dumps(message)
+    channel.basic_publish(exchange='', routing_key=q_name, body=json.dumps(message))
     # if channel.basic_publish(exchange='', routing_key=q_name, body=json.dumps(message)):
     #     LOG.info('Message has been delivered')
     # else:
