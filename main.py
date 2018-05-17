@@ -37,10 +37,11 @@ if __name__ == '__main__':
     # Turn on delivery confirmations
     channel.confirm_delivery()
 
-    if channel.basic_publish(exchange='', routing_key=q_name, body=json.dumps(message)):
-        LOG.info('Message has been delivered')
-    else:
-        LOG.warning('Message NOT delivered')
+    channel.basic_publish(exchange='', routing_key=q_name, body=json.dumps(message)
+    # if channel.basic_publish(exchange='', routing_key=q_name, body=json.dumps(message)):
+    #     LOG.info('Message has been delivered')
+    # else:
+    #     LOG.warning('Message NOT delivered')
 
     channel.basic_consume(on_message, SET['queue_current'])
 
