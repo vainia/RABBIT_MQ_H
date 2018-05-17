@@ -6,7 +6,8 @@ from data_block import *
 
 def on_message(channel, method_frame, header_frame, body):
     data = json.loads(body)
-    perform(data)
+
+    send_to_queve(perform(data))
 
     channel.basic_ack(delivery_tag=method_frame.delivery_tag)
 
