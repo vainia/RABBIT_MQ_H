@@ -5,13 +5,9 @@ from performer import *
 from data_block import *
 
 def on_message(channel, method_frame, header_frame, body):
-    try:
-        data = json.loads(body)
-    except:
-        data = body.decode("utf-8")
-
-    to_send = perform(data)
-    send_to_queve(to_send)
+    body = json.loads(body)
+    body["NAME"] = perform(body["NAME"])
+    send_to_queve(body)
     LOG.info(f'Message "{to_send}" has been sent')
 
     channel.basic_ack(delivery_tag=method_frame.delivery_tag)
@@ -37,9 +33,6 @@ if __name__ == '__main__':
 
     # Turn on delivery confirmations
     channel.confirm_delivery()
-
-    channel.basic_publish(exchange='', routing_key=q_name, body=json.dumps(message))
-    LOG.info(f'Message "{message}" has been initialized')
 
     channel.basic_consume(on_message, SET['queue_current'])
 
