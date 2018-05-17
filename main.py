@@ -1,10 +1,51 @@
-from pathlib import Path
+import json
+import pika, logging
+from config import *
+from performer import *
+from data_block import *
+
+def on_message(channel, method_frame, header_frame, body):
+    data = json.loads(body)
+    perform(data)
+
+    channel.basic_ack(delivery_tag=method_frame.delivery_tag)
+
+def send_to_queve(data):
+    qn = channel.queue_declare(SET['queue_above'])
+    qn_name = q.method.queue
+
+    if channel.basic_publish(exchange='', routing_key=qn_name, body=json.dumps(data)):
+        LOG.info('Message has been delivered')
+    else:
+        LOG.warning('Message NOT delivered')
+
 
 if __name__ == '__main__':
 
-    names=['./RABBIT_MQ_'+n for n in ['H','E','L','W']]
-    for n in names:
-        if Path(n).exists():
-            #subprocess.call([sys.executable, n+'/producer.py', '-m \'Hello, World!\'', '-r 3'])
-            exec(open(n+'/producer.py').read())
-            exec(open(n+'/consumer.py').read())
+    logging.basicConfig(level=logging.INFO)
+    LOG = logging.getLogger(__name__)
+
+    credentials = pika.PlainCredentials(SET['name'], SET['passwd'])
+    parameters = pika.ConnectionParameters(SET['server'], SET['port'], '/', credentials)
+    connection = pika.BlockingConnection(parameters)
+    channel = connection.channel()
+
+    q = channel.queue_declare(SET['queue_current'])
+    q_name = q.method.queue
+
+    # Turn on delivery confirmations
+    channel.confirm_delivery()
+
+    if channel.basic_publish(exchange='', routing_key=q_name, body=json.dumps(message)):
+        LOG.info('Message has been delivered')
+    else:
+        LOG.warning('Message NOT delivered')
+
+    channel.basic_consume(on_message, SET['queue_current'])
+
+    try:
+        channel.start_consuming()
+    except KeyboardInterrupt:
+        channel.stop_consuming()
+
+    #connection.close()
