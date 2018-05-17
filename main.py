@@ -5,22 +5,22 @@ from performer import *
 from data_block import *
 
 def on_message(channel, method_frame, header_frame, body):
-    data = json.loads(body)
+    try:
+        data = json.loads(body)
+    except:
+        data = body.decode("utf-8")
 
-    send_to_queve(perform(data))
+    to_send = perform(data)
+    send_to_queve(to_send)
+    LOG.info(f'Message "{to_send}" has been sent')
 
     channel.basic_ack(delivery_tag=method_frame.delivery_tag)
 
 def send_to_queve(data):
     qn = channel.queue_declare(SET['queue_above'])
-    qn_name = q.method.queue
+    qn_name = qn.method.queue
 
     channel.basic_publish(exchange='', routing_key=qn_name, body=json.dumps(data))
-    # if channel.basic_publish(exchange='', routing_key=qn_name, body=json.dumps(data)):
-    #     LOG.info('Message has been delivered')
-    # else:
-    #     LOG.warning('Message NOT delivered')
-
 
 if __name__ == '__main__':
 
@@ -39,10 +39,7 @@ if __name__ == '__main__':
     channel.confirm_delivery()
 
     channel.basic_publish(exchange='', routing_key=q_name, body=json.dumps(message))
-    # if channel.basic_publish(exchange='', routing_key=q_name, body=json.dumps(message)):
-    #     LOG.info('Message has been delivered')
-    # else:
-    #     LOG.warning('Message NOT delivered')
+    LOG.info(f'Message "{message}" has been initialized')
 
     channel.basic_consume(on_message, SET['queue_current'])
 
