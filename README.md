@@ -16,7 +16,8 @@ Pika has used for supplying pure-Python implementation of the AMQP 0-9-1 protoco
 All commands will be perform in terminal (`docker` must be installed).
 
 First of all you need to raise up RabbitMQ server with command:
-```ShellSession
+
+```
 docker run -d --hostname my-rabbit -p 0.0.0.0:5672:5672 -p 0.0.0.0:15672:15672  --name some-rabbit -e RABBITMQ_DEFAULT_USER=user_name -e RABBITMQ_DEFAULT_PASS=user_password rabbitmq:3-management
 ```
 
